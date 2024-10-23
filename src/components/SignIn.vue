@@ -234,7 +234,11 @@ input:focus {
     align-items: flex-end;
     
   }
-
+  
+  input::placeholder{
+    color: #8f9bb3;
+    
+}
   
   .checkbox {
     position: relative;

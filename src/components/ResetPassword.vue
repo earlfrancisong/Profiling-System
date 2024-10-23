@@ -163,6 +163,11 @@ input:focus {
     outline: none;
 }
 
+input::placeholder{
+    color: #8f9bb3;
+    
+}
+
 .input-form button {
     padding: 11px 18px;
     font-size: 14px;

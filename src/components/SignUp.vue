@@ -10,36 +10,53 @@
 
         <div class="register">
             <div class="form">
-                <label class="label">FIRST NAME</label>
-                <input type="text" placeholder="First Name"/>
+                <label class="label">FIRST NAME<span class="required">*</span></label>
+                <input type="text" placeholder="i.e Daniela" />
 
             </div>
             <div class="form">
                 <label class="label">MIDDLE NAME</label>
-                <input type="text" placeholder="Middle Name"/>
+                <input type="text" placeholder="i.e. Salvame"/>
 
             </div>
             <div class="form">
-                <label class="label">LAST NAME</label>
-                <input type="text" placeholder="Last Name"/>
+                <label class="label">LAST NAME<span class="required">*</span></label>
+                <input type="text" placeholder="i.e. Kareem"/>
 
             </div>
             <div class="form">
-                <label class="label">EMAIL ADDRESS</label>
-                <input type="text" placeholder="Email Address"/>
+                <label class="label">EMAIL ADDRESS<span class="required">*</span></label>
+                <input type="text" placeholder="i.e. danielakareem@lanexcorp.com"/>
 
             </div>
-            <div class="form">
-                <label class="label">PASSWORD</label>
-                <input type="password" placeholder="*****"/>
-
+            <div class="form password-container">
+                <label class="label">PASSWORD<span class="required">*</span></label>
+                <div class="password-container">
+                    <input :type="passwordVisible ? 'text' : 'password'" placeholder="*****" class="input-text"/>
+                    <img
+                        :src="passwordVisible ? require('@/assets/images/show.png') : require('@/assets/images/hide.png')"
+                        @click="togglePasswordVisibility"
+                        class="toggle-password"
+                        alt="toggle password visibility"/>
+                </div>
             </div>
-            <div class="form">
-                <label class="label">CONFIRM PASSWORD</label>
-                <input type="password" placeholder="*****"/>
-
+            
+            <div class="form password-container">
+                <label class="label">CONFIRM PASSWORD<span class="required">*</span></label>
+                <div class="password-container">
+                    <input :type="passwordVisible ? 'text' : 'password'" placeholder="*****" class="input-text"/>
+                    <img
+                        :src="passwordVisible ? require('@/assets/images/show.png') : require('@/assets/images/hide.png')"
+                        @click="togglePasswordVisibility"
+                        class="toggle-password"
+                        alt="toggle password visibility"/>
+                </div>
             </div>
             <button type="submit">SIGN UP</button>
+            <div class="sign-in">
+                    <label class="or label">OR</label>
+                    <a  class="link signinbtn" href="/" @click="goToSignIn">SIGN IN HERE</a>
+                </div>
         </div>
     </div>
    </div>
@@ -52,7 +69,26 @@
 
 <script>
 export default{
-    name: 'SignUp'
+    name: 'SignUp',
+    data() {
+        return {
+            passwordVisible: false,
+            password: "",
+        };
+    },
+    computed: {
+        passwordFieldType() {
+            return this.passwordVisible ? "text" : "password";
+        },
+    },
+    methods: {
+        togglePasswordVisibility() {
+            this.passwordVisible = !this.passwordVisible;
+        },
+        goToSignIn(){
+            this.$router.push({name:'SignIn'})
+        }
+    },
 }
 </script>
 
@@ -125,6 +161,8 @@ label {
     
 }
 
+
+
 .register .form input{
     font-weight: 400;
     line-height: 1.6rem;
@@ -143,6 +181,15 @@ label {
     box-sizing: border-box;
 }
 
+input::placeholder{
+    color: #8f9bb3;
+    
+}
+
+input:focus {
+    border-color: #3864fc !important;
+    outline: none;
+}
 .register button {
     padding: 11px 18px;
     font-size: 14px;
@@ -158,4 +205,52 @@ label {
     border-style: solid;
   }
   
+  .password-container {
+    position: relative;
+    width: 100%;
+    cursor: pointer;
+  }
+
+  .password-container .input-text {
+    width: calc(100% - 40px);
+    padding-right: 40px;
+  }
+
+  .toggle-password {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+    opacity: 0.7;
+  }
+
+  .toggle-password:hover {
+    opacity: 1;
+  }
+
+  .link {
+    font-size: 12px;
+    font-weight: 600;
+    color: #36f;
+  }
+
+  .or {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 22px 0;
+  }
+
+  .signupbtn {
+    margin-bottom: 22px;
+  }
+
+  .required {
+    color: #dc3545;
+    margin-left: 0.25rem !important;
+  }
+
 </style>
