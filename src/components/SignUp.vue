@@ -44,10 +44,10 @@
             <div class="form password-container">
                 <label class="label">CONFIRM PASSWORD<span class="required">*</span></label>
                 <div class="password-container">
-                    <input :type="passwordVisible ? 'text' : 'password'" placeholder="*****" class="input-text"/>
+                    <input :type="confirmPasswordVisible ? 'text' : 'password'" placeholder="*****" class="input-text"/>
                     <img
-                        :src="passwordVisible ? require('@/assets/images/show.png') : require('@/assets/images/hide.png')"
-                        @click="togglePasswordVisibility"
+                        :src="confirmPasswordVisible ? require('@/assets/images/show.png') : require('@/assets/images/hide.png')"
+                        @click="toggleConfirmPasswordVisibility"
                         class="toggle-password"
                         alt="toggle password visibility"/>
                 </div>
@@ -73,6 +73,7 @@ export default{
     data() {
         return {
             passwordVisible: false,
+            confirmPasswordVisible: false,
             password: "",
         };
     },
@@ -84,6 +85,9 @@ export default{
     methods: {
         togglePasswordVisibility() {
             this.passwordVisible = !this.passwordVisible;
+        },
+        toggleConfirmPasswordVisibility() {
+            this.confirmPasswordVisible = !this.confirmPasswordVisible;
         },
         goToSignIn(){
             this.$router.push({name:'SignIn'})
@@ -130,7 +134,7 @@ export default{
 h5 {
     color: #0a043c;
     font-weight: 600;
-    font-size: 25px;
+    font-size: 20px;
     line-height: 30px;
     margin-top: 8px;
 }
