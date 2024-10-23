@@ -56,7 +56,7 @@ export default{
 }
 </script>
 
-<style>
+<style scoped>
 .signup {
     box-sizing: border-box;
     display: flex;

@@ -70,23 +70,24 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .signin {
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    justify-items: flex-start;
+    justify-items: center;
     align-items: center;
     width: 100%;
+    margin-top: 80px;
 }
 
 .logo {
     margin-bottom: 32px;
-    margin-top: 16px;
+    margin-top: 8px;
 }
 
 .logo img{
-    width: 100px;
+    width: 90px;
 }
 
 .signin-card {
@@ -108,7 +109,7 @@ export default {
 h5 {
     color: #0a043c;
     font-weight: 600;
-    font-size: 25px;
+    font-size: 20px;
     line-height: 30px;
     margin-top: 8px;
 }
