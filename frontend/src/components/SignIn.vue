@@ -1,21 +1,22 @@
 <template>
     <div class="signin">
-    <div class="signin-card">
+      <div class="signin-card">
         <div class="logo">
             <img alt="Vue logo" src="../assets/images/lanex-logo.svg">
 
             <h5>Lanex Profiling System</h5>
         </div>
-            <div class="register">
+        <form @submit.prevent="signIn">
+          <div class="register">
                 <div class="form">
                     <label class="label">EMAIL ADDRESS<span class="required">*</span></label>
-                    <input type="text" placeholder="i.e. danielakareem@lanexcorp.com" class="input-text"/>
-
+                    <input v-model="email" type="text" placeholder="i.e. danielakareem@lanexcorp.com" class="input-text"/>
+                    <span class="error-message" :class="{ visible: errorMessage.email }">{{ errorMessage.email }}</span>
                 </div>
-                <div class="form password-container">
+                <div class="form">
                     <label class="label">PASSWORD<span class="required">*</span></label>
                     <div class="password-container">
-                        <input :type="passwordVisible ? 'text' : 'password'" placeholder="*****" class="input-text"/>
+                        <input v-model="password" :type="passwordVisible ? 'text' : 'password'" placeholder="*****" class="input-text"/>
                         <img
                         :src="passwordVisible ? require('@/assets/images/show.png') : require('@/assets/images/hide.png')"
                         @click="togglePasswordVisibility"
@@ -23,32 +24,38 @@
                         alt="toggle password visibility"
                         />
                     </div>
+                    <span class="error-message" :class="{ visible: errorMessage.password }">{{ errorMessage.password }}</span>
                 </div>
-                <div class="form-item action">
+                <div class="form-item">
                     <div class="checkbox">
-                        <label class="RememberMe"><input type="checkbox" name="remember"><span class="label remember-label">Remember Me</span></label>
+                        <label class="RememberMe"><input type="checkbox" v-model="rememberMe"><span class="label remember-label">Remember Me</span></label>
                         <a class="link" href="/reset-password" @click="goToResetPassword">RESET PASSWORD</a>
                     </div>
                 </div>
-                <button status="primary" type="submit" class="btn" > SIGN IN </button>
-                <div class="sign-up">
-                    <label class="or label">OR</label>
+                <div class="signinBtn">
+                    <button type="submit" > SIGN IN </button>
+                    <label class="or">OR</label>
                     <a  class="link signupbtn" href="/sign-up" @click="goToSignUp">SIGN UP HERE</a>
                 </div>
             </div>
-        </div>
+        </form>
+      </div>
     </div>
 </template>
 
 
 
 <script>
+import axios from 'axios';
 export default {
     name: "SignIn",
     data() {
         return {
             passwordVisible: false,
+            email: "", 
             password: "",
+            rememberMe: false,
+            errorMessage: {} 
         };
     },
     computed: {
@@ -65,9 +72,81 @@ export default {
         },
         goToResetPassword(){
             this.$router.push({name:'ResetPassword'})
+        },
+        async signIn() {
+          this.errorMessage = {};
+          try {
+            const response = await axios.post('/user', {
+              email: this.email,
+              password: this.password
+            });
+            
+            console.log('Response data:', response.data); 
+            if (response.data.status === "SUCCESS") {
+              if (this.rememberMe) {
+                localStorage.setItem('rememberedEmail', this.email);
+                localStorage.setItem('rememberedPassword', this.password);
+              } else {
+                localStorage.removeItem('rememberedEmail');
+                localStorage.removeItem('rememberedPassword');
+              }
+              this.$router.push({ name: 'HomePage' });
+            } else {
+              const messages = response.data.message.split(', '); 
+              messages.forEach(msg => {
+                
+                if (msg.includes('Email is required') || msg.includes('Enter a valid email address') || msg.includes('Please provide a lanex email address')) {
+                    this.errorMessage.email = msg;
+                }
+                if (msg.includes('Password is required')) {
+                    this.errorMessage.password = msg;
+                }
+              });
+            }
+          } catch (error) {
+            console.error('Sign-in error', error);
+            
+          }
+        },
+        validateEmail(email) {
+          const lanexDomainRegex = /^[\w.-]+@lanexcorp\.com$/;
+          const generalEmailRegex = /^[\w.-]+@([\w-]+\.)+[\w-]{2,4}$/;
+
+          if (!generalEmailRegex.test(email)) {
+            return "Enter a valid email address";
+          } else if (!lanexDomainRegex.test(email)) {
+            return "Please provide a lanex email address";
+          }
+          return '';
+        },
+        retrieveSavedCredentials() {
+          this.email = localStorage.getItem('rememberedEmail') || '';
+          this.password = localStorage.getItem('rememberedPassword') || '';
+          this.rememberMe = !!this.email;
         }
-    },
-};
+      },
+      watch: {
+        email(newValue) {
+            if (!newValue) {
+              this.errorMessage.email = "Email is required";
+            } else {
+              const emailError = this.validateEmail(newValue);
+              this.errorMessage.email = emailError;
+            }
+        },
+        password(newValue) {
+            if (!newValue) {
+              this.errorMessage.password = "Password is required";
+            } else {
+                
+              this.errorMessage.password = '';
+            }
+        }
+      },
+      created() {
+        this.retrieveSavedCredentials(); 
+      }
+}
 </script>
 
 <style scoped>
@@ -75,7 +154,7 @@ export default {
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    justify-items: center;
+    justify-content: center;
     align-items: center;
     width: 100%;
     margin-top: 80px;
@@ -128,8 +207,9 @@ h5 {
     flex-direction: column;
     align-items: flex-start;
     justify-content: center;
-    margin-bottom: 24px;
+    margin: 0 32px 32px;
     box-sizing: border-box;
+    position: relative;
 }
 
 label {
@@ -223,10 +303,11 @@ input:focus {
 
 
   .form-item {
-    margin: 35px 0;
     display: flex;
+    margin: 35px 30px;
     flex-direction: column;
-    width: 100%; 
+    
+    box-sizing: border-box;
   } 
 
   input[type="checkbox"] {
@@ -279,5 +360,28 @@ input:focus {
     margin-left: 0.25rem !important;
   }
   
-  
+  .signinBtn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    
+    margin: 0 30px;
+    box-sizing: border-box;
+  }
+
+
+  .error-message {
+    color: red;
+    font-size: 12px;
+    position: absolute;
+    left: 0;
+    top: 100%;
+    margin: 4px 0 ;
+    display: none;
+  }
+
+  .error-message.visible {
+      display: block; 
+  }
 </style>

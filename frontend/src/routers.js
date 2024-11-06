@@ -8,7 +8,8 @@ const routes = [
     {
         name: 'HomePage',
         component: HomePage,
-        path: '/home'
+        path: '/home',
+        
     },
     {
         name: 'SignUp',
@@ -18,7 +19,8 @@ const routes = [
     {
         name: 'SignIn',
         component: SignIn,
-        path: '/'
+        path: '/',
+        
     },
     {
         name: 'ResetPassword',
@@ -32,5 +34,9 @@ const router = createRouter({
     routes,
 });
 
+router.beforeEach((to, from, next) => {
+    document.title = 'Lanex Profiling System '; 
+    next();
+});
 
 export default router;
